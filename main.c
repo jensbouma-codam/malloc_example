@@ -6,7 +6,7 @@
 /*   By: jensbouma <jensbouma@student.codam.nl>       +#+                     */
 /*                                                   +#+                      */
 /*   Created: 2024/11/18 09:36:14 by jensbouma     #+#    #+#                 */
-/*   Updated: 2024/11/18 12:15:33 by jensbouma     ########   odam.nl         */
+/*   Updated: 2024/11/18 13:00:17 by jensbouma     ########   odam.nl         */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -23,6 +23,8 @@ bool 	g_running = true;
 char	*g_str = NULL;
 const unsigned long long	gigabyte = 1ULL << 30;
 const unsigned long long	megabyte = 1ULL << 20;
+unsigned long long 			maxtb = 128ULL * 1024 * 1024 * 1024 * 1024;
+
 const char					indicator[4] = "|/-\\";
 int							x = 0;
 
@@ -72,7 +74,7 @@ void	allocate(int allocated, int zeroed, int overallocate, bool cal)
 
 	if (!g_str)
 	{
-		printf("failed\n");
+		printf(" failed                                             \n");
 		exit(EXIT_FAILURE);
 	}
 	printf("successful\n");
@@ -136,17 +138,19 @@ int	main()
 	printf("\033[1;10H");
 	printf("Press 'q' to quit\n");
 	printf("\033[2;10H");
-	printf("Press 'up' to allocate more memory\n");
+	printf("Press 'up/down' to allocate 1GB more or less\n");
 	printf("\033[3;10H");
-	printf("Press 'down' to deallocate memory\n");
+	printf("Press 'left/right' to allocate 1TB less or more\n");
 	printf("\033[4;10H");
-	printf("Press 'z' to enable zeroing memory\n");
+	printf("Press 'z' to enable and 'a' to disable zeroing memory\n");
 	printf("\033[5;10H");
-	printf("Press 'a' to disable zeroing\n");
-	printf("\033[6;10H");
 	printf("Press 'x' to overallocate memory with 1MB\n");
-	printf("\033[7;10H");
+	printf("\033[6;10H");
 	printf("Press 'c' to use calloc instead of malloc\n");
+	printf("\033[7;10H");
+	printf("Press 'm' to allocate 127TB\n");
+	printf("\033[8;10H");
+	printf("Press 't' to exit the program without free\n");
 
 	enablerawmode();
 
@@ -215,6 +219,15 @@ int	main()
 				else if (buffer[0] == 'c')
 				{
 					allocate(allocated, zeroed, overallocate, true);
+				}
+				else if (buffer[0] == 'm')
+				{
+					allocated = 127 * 1024;
+					allocate(allocated, zeroed, overallocate, false);
+				}
+				else if (buffer[0] == 't')
+				{
+					exit(EXIT_SUCCESS);
 				}
 			}
 		}
